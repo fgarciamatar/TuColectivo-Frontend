@@ -1,6 +1,6 @@
-import { Pressable, SafeAreaView, Text, View } from "react-native";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from "expo-router";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
 
 
 
@@ -28,6 +28,12 @@ export default function LandingScreen() {
                  >
                     <Text className="text-white font-bold text-center"> Registrarme </Text>
                 </Pressable>
+                
+                
+        {/* boton para dirigirme a tabs */}
+            <Pressable className="bg-white px-6 py-4 rounded-md mb-4" onPress={() => {router.push('/(tabs)')}}>
+                <Text className='font-bold'>tabs</Text> 
+            </Pressable> 
             </View>
             
             <Text className="text-white font-bold mt-10"> Encuentra tu colectivo de forma fácil, rápida y segura</Text>
