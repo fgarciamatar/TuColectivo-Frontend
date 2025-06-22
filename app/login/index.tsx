@@ -1,33 +1,32 @@
-import { KeyboardAvoidingView, Platform, Pressable, SafeAreaView, Text, TextInput, View } from "react-native";
-import { useState } from 'react';
 import { useRouter } from "expo-router";
 import { Formik } from 'formik';
+import { useState } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, SafeAreaView, Text, TextInput, View } from "react-native";
 import { validationSchema } from '../../utils/validationLogin';
 
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+//Iconos
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { useAuthStore } from '@/stores/authStore';
 
 interface LoginCredentials {
   email: string;
-  password: string;
+  contraseña: string;
 }
 
 const LoginForm = () => {
   const router = useRouter();
   const [step] = useState(1);
 
-  const { loginUsuario, error, loading } = useAuthStore();
+  const { loginUsuario, error, loading, access } = useAuthStore();
 
   const handleLogin = async (credentials: LoginCredentials) => {
-    await loginUsuario(credentials.email, credentials.password);
-
-    // Aseguramos que se navegue SOLO si se autenticó correctamente
-    if (useAuthStore.getState().isAuthenticated) {
-      router.replace('/(tabs)');
-    }
+    console.log('Intentando iniciar sesión con', credentials);
+      const response = await loginUsuario(credentials.email, credentials.contraseña);
+      alert(response.message)
+    router.replace('/(tabs)');
   };
 
   return (
@@ -38,6 +37,7 @@ const LoginForm = () => {
       >
         <View className="flex-1 justify-center items-center px-6">
           <View className="bg-[#1e1e1e] rounded-2xl p-6 w-full max-w-md border border-orange-900">
+
 
             {/* Icono */}
             <View className="bg-orange-900 rounded-full mx-32 py-2 items-center">
@@ -51,7 +51,7 @@ const LoginForm = () => {
             </View>
 
             <Formik
-              initialValues={{ email: '', password: '' }}
+              initialValues={{ email: '', contraseña: '' }}
               validationSchema={validationSchema}
               onSubmit={handleLogin}
             >
@@ -91,31 +91,28 @@ const LoginForm = () => {
                         placeholder="******"
                         placeholderTextColor="#999"
                         secureTextEntry
-                        onChangeText={handleChange('password')}
-                        onBlur={handleBlur('password')}
-                        value={values.password}
+                        onChangeText={handleChange('contraseña')}
+                        onBlur={handleBlur('contraseña')}
+                        value={values.contraseña}
                       />
                     </View>
-                    {touched.password && errors.password && (
-                      <Text className="text-red-500 text-sm mt-1">{errors.password}</Text>
+                    {touched.contraseña && errors.contraseña && (
+                      <Text className="text-red-500 text-sm mt-1">{errors.contraseña}</Text>
                     )}
                   </View>
 
-                  {/* Mostrar error global de login */}
-                  {error && (
-                    <Text className="text-red-500 text-sm text-center">{error}</Text>
-                  )}
-
                   {/* Botón de login */}
                   <Pressable
-                    onPress={() => handleSubmit()}
+                    onPress={() => handleSubmit()} 
                     className={`mt-6 ${loading ? 'bg-orange-300' : 'bg-orange-600'} py-3 rounded-xl items-center`}
-                    disabled={loading}
+                    disabled={loading} // Este estado lo está deshabilitando si `loading` es verdadero
                   >
                     <Text className="font-bold text-white">
                       {loading ? 'Cargando...' : 'Iniciar Sesión'}
                     </Text>
                   </Pressable>
+
+
 
                 </View>
               )}

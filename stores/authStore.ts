@@ -1,98 +1,117 @@
 // store/storeAuth.ts
+import Constants from 'expo-constants';
 import { create } from 'zustand';
-import { guardarToken, obtenerToken, borrarToken } from '../utils/secureStore';
+import { guardarTokens } from "./../utils/secureStore";
 
-interface User {
-  id?: string;
-  name?: string;
+export interface UserInput { // Usuario para registro
+  nombre: string;
+  apellido: string;
   email: string;
-  token?: string;
+  contraseña: string;
+  dni: string;
+  celular: string;
+  rol?: string;
 }
 
-interface AuthState {
-  user: User | null;
+export interface User { //Usuario traido de login
+  dni: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  rol: string;
+}
+
+export interface AuthTokens { //Tokens
+  accessToken: string;
+  refreshToken: string;
+}
+
+
+export interface AuthResponse { //Respuesta del login
+  message: string;
+  access: boolean;
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
+
+
+interface AuthState { //Almacenamiento de zustand
+  userData: User | null;
   isAuthenticated: boolean;
   loading: boolean;
+  access: boolean;
   error: string | null;
-  loginUsuario: (email: string, password: string) => Promise<void>;
-  registroUsuario: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
-  cargarUsuarioDesdeStorage: () => Promise<void>;
+  loginUsuario: (email: string, password: string) => Promise<AuthResponse>;
+  registroUsuario: (data: UserInput) => Promise<void>;
+
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
+
+
+
+export const API = Constants.expoConfig?.extra?.API;
+
+export const UseAuthStore = create<AuthState>((set) => ({
+  userData: null,
   isAuthenticated: false,
   loading: false,
+  access: false,
   error: null,
 
-  loginUsuario: async (email, password) => {
+  registroUsuario: async (data: UserInput) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch('https://tuservidor.com/api/login', {
+      const res = await fetch(`${API}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      if (!result.ok) throw new Error('Error al registrar usuario');
+
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+      throw new Error(error.message)
+    }
+  },//Registro terminado
+
+  loginUsuario: async (email, contraseña) => {
+    set({ loading: true, error: null });
+    try {
+      console.log('API URL', API);
+      
+      const res = await fetch(`${API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, contraseña }),
       });
 
       if (!res.ok) throw new Error('Credenciales inválidas');
 
-      const data = await res.json();
+      const result = await res.json();
 
-      await guardarToken(data.token); // ⬅️ Guardamos el token
+      const response: AuthResponse = {
+        message: result.message,
+        access: result.access,
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      }
 
       set({
-        user: { email: data.email, token: data.token },
-        isAuthenticated: true,
-        loading: false,
-      });
+        userData: response.user,
+        access: response.access
+      })
+      // set({loading:false})
+      guardarTokens(response.accessToken, response.refreshToken)
+      return response;
+
     } catch (error: any) {
       set({ error: error.message, loading: false });
+      throw new Error(error.message);
     }
   },
 
-  registroUsuario: async (name, email, password) => {
-    set({ loading: true, error: null });
-    try {
-      const res = await fetch('https://tuservidor.com/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!res.ok) throw new Error('Error al registrar usuario');
-
-      const data = await res.json();
-
-      await guardarToken(data.token); // ⬅️ Guardamos el token
-
-      set({
-        user: { name: data.name, email: data.email, token: data.token },
-        isAuthenticated: true,
-        loading: false,
-      });
-    } catch (error: any) {
-      set({ error: error.message, loading: false });
-    }
-  },
-
-  logout: async () => {
-    await borrarToken(); // ⬅️ Eliminamos el token del storage
-    set({ user: null, isAuthenticated: false, loading: false, error: null });
-  },
-
-  cargarUsuarioDesdeStorage: async () => {
-    set({ loading: true });
-    const token = await obtenerToken();
-    if (token) {
-      // Opcional: podrías validar token con backend o decodificarlo
-      set({
-        user: { email: '', token }, // ⚠️ Actualizá con más datos si los podés obtener
-        isAuthenticated: true,
-        loading: false,
-      });
-    } else {
-      set({ loading: false });
-    }
-  },
 }));

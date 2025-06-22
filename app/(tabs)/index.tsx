@@ -1,81 +1,59 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-import { View, Text } from 'react-native'
+import LeafletMap from '@/components/LeafletMap';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+//Icons
+import Entypo from '@expo/vector-icons/Entypo';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 
+
+const destinations = [
+  { name: 'Plaza Haimes', distance: '0.8km', time: '10min' },
+  { name: 'Terminal', distance: '1.7km', time: '23min' },
+  { name: 'Centro', distance: '1.2km', time: '15min' },
+];
+//-27.353384, -65.595765 TERMINAL DE OMNIBUS
 export default function HomeScreen() {
   return (
-<View className="flex-1 bg-black"> 
-    {/* <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+  <SafeAreaView className='flex-1 bg-slate-800 items-center'>
+        <LeafletMap latitude={-27.353384} longitude={-65.595765} zoom={12} /> 
+ 
+      <View className='absolute bottom-0 bg-black/80 rounded-2xl p-4 w-[95%] self-center mt-8 mb-2'>
+
+
+        <View className='bg-orange-600 p-3 rounded-t-xl flex-row items-center space-x-2'>
+          <Entypo name="direction" size={20} color="white" />
+        <Text className='text-white text-2xl font-bold'> ¿A dónde vas? </Text>
+        </View>
+
+        <View className="bg-neutral-900 px-3 py-2 rounded-xl mt-3 flex-row items-center space-x-2">
+        <TextInput
+          placeholder="Buscar destino..."
+          placeholderTextColor="gray"
+          className="text-white flex-1"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText className='bg-gray-700'  type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView> */}
+      </View>
 
-    <Text className='bg-black justify-center'>
-      Hola paulo!
-    </Text>
-  </View> 
-)}
+        <Text className="text-white mt-4 mb-2 font-semibold">Destinos populares</Text>
+      {destinations.map((item, index) => (
+        <TouchableOpacity
+          key={index}
+          className="bg-neutral-900 p-3 rounded-xl mb-2 flex-row items-center justify-between"
+        >
+          <View className="flex-row items-center space-x-2">
+            
+            <View>
+              <Text className="text-white font-medium">{item.name}</Text>
+              <Text className="text-gray-400 text-xs">{item.distance}</Text>
+            </View>
+          </View>
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+          <View className="bg-neutral-800 px-3 py-1 rounded-full flex-row items-center space-x-1">
+            <EvilIcons name="clock" size={24} color="white" />
+            <Text className="text-orange-400 text-sm">{item.time}</Text>
+          </View>
+        </TouchableOpacity>
+      ))}
+
+      </View>
+  </SafeAreaView>
+)} 

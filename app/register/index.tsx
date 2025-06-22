@@ -1,17 +1,17 @@
-import { Text, TextInput, SafeAreaView, View, Pressable, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
-import { useState } from "react";
 import { useRouter } from "expo-router";
 import { Formik } from 'formik';
-import { validationSchema } from '../../utils/validationRegister';
+import { useState } from "react";
+import { KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
+import { validationSchema } from '../../utils/validationRegister';
 
 // Store
 import { useAuthStore } from '@/stores/authStore';
 
 // Iconos
+import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 const RegisterScreen = () => {
   const [step, setStep] = useState(1);
@@ -32,12 +32,12 @@ const RegisterScreen = () => {
             {/* Formulario */}
             <View className="bg-[#1e1e1e] rounded-2xl p-6 w-full max-w-md border border-orange-900">
               <Formik
-                initialValues={{ name: '', email: '', password: '', confirmPassword: '' }}
+                initialValues={{ nombre: '', apellido: '', email: '', dni: '', celular:'', contraseña: '', confirmarContraseña: '', rol:"pasajero" }}
                 validationSchema={validationSchema}
                 onSubmit={async (values, { resetForm }) => {
-                  await registroUsuario(values.name, values.email, values.password);
+                  await registroUsuario(values);
                   resetForm();
-                  router.replace('/');
+                  router.replace('/login');
                 }}
               >
                 {({ handleChange, handleSubmit, setFieldTouched, validateForm, values, errors, touched }) => (
@@ -58,14 +58,31 @@ const RegisterScreen = () => {
                               className="flex-1 text-white py-3 ml-2"
                               placeholder="Nombre completo"
                               placeholderTextColor="#999"
-                              onChangeText={handleChange('name')}
-                              value={values.name}
+                              onChangeText={handleChange('nombre')}
+                              value={values.nombre}
                             />
                           </View>
-                          {touched.name && errors.name && (
-                            <Text className="text-red-500 text-sm mt-1">{errors.name}</Text>
+                          {touched.nombre && errors.nombre && (
+                            <Text className="text-red-500 text-sm mt-1">{errors.nombre}</Text>
                           )}
+                          <Text className="text-white mb-1">¿Cuál es tu apellido?</Text>
+                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
+                            <Ionicons name="person-outline" size={20} color="#FFA500" />
+                            <TextInput
+                              className="flex-1 text-white py-3 ml-2"
+                              placeholder="Apellido"
+                              placeholderTextColor="#999"
+                              onChangeText={handleChange('apellido')}
+                              value={values.apellido}
+                            />
+                          </View>
+                          {touched.apellido && errors.apellido && (
+                            <Text className="text-red-500 text-sm mt-1">{errors.apellido}</Text>
+                          )}
+                        
+
                         </View>
+                        
                       )}
 
                       {/* Email */}
@@ -87,6 +104,36 @@ const RegisterScreen = () => {
                           {touched.email && errors.email && (
                             <Text className="text-red-500 text-sm mt-1">{errors.email}</Text>
                           )}
+                          <Text className="text-white mb-1">¿Cuál es tu dni?</Text>
+                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
+                            <MaterialCommunityIcons name="email-outline" size={20} color="#FFA500" />
+                            <TextInput
+                              className="flex-1 text-white py-3 ml-2"
+                              placeholder="DNI"
+                              placeholderTextColor="#999"
+                              keyboardType="number-pad"
+                              onChangeText={handleChange('dni')}
+                              value={values.dni}
+                            />
+                          </View>
+                          {touched.dni && errors.dni && (
+                            <Text className="text-red-500 text-sm mt-1">{errors.dni}</Text>
+                          )}
+                          <Text className="text-white mb-1">¿Cuál es tu número telefónico?</Text>
+                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
+                            <MaterialCommunityIcons name="email-outline" size={20} color="#FFA500" />
+                            <TextInput
+                              className="flex-1 text-white py-3 ml-2"
+                              placeholder="Número de Celular"
+                              placeholderTextColor="#999"
+                              keyboardType="number-pad"
+                              onChangeText={handleChange('celular')}
+                              value={values.celular}
+                            />
+                          </View>
+                          {touched.celular && errors.celular && (
+                            <Text className="text-red-500 text-sm mt-1">{errors.celular}</Text>
+                          )}
                         </View>
                       )}
 
@@ -102,12 +149,12 @@ const RegisterScreen = () => {
                                 placeholder="Contraseña"
                                 placeholderTextColor="#999"
                                 secureTextEntry
-                                onChangeText={handleChange('password')}
-                                value={values.password}
+                                onChangeText={handleChange('contraseña')}
+                                value={values.contraseña}
                               />
                             </View>
-                            {touched.password && errors.password && (
-                              <Text className="text-red-500 text-sm mt-1">{errors.password}</Text>
+                            {touched.contraseña && errors.contraseña && (
+                              <Text className="text-red-500 text-sm mt-1">{errors.contraseña}</Text>
                             )}
                           </View>
 
@@ -120,12 +167,12 @@ const RegisterScreen = () => {
                                 placeholder="Confirmar contraseña"
                                 placeholderTextColor="#999"
                                 secureTextEntry
-                                onChangeText={handleChange('confirmPassword')}
-                                value={values.confirmPassword}
+                                onChangeText={handleChange('confirmarContraseña')}
+                                value={values.confirmarContraseña}
                               />
                             </View>
-                            {touched.confirmPassword && errors.confirmPassword && (
-                              <Text className="text-red-500 text-sm mt-1">{errors.confirmPassword}</Text>
+                            {touched.confirmarContraseña && errors.confirmarContraseña && (
+                              <Text className="text-red-500 text-sm mt-1">{errors.confirmarContraseña}</Text>
                             )}
                           </View>
                         </>
@@ -135,22 +182,30 @@ const RegisterScreen = () => {
                     {/* Botón */}
                     <Pressable
                       onPress={async () => {
-                        const currentField =
+                        const currentFields =
                           step === 1
-                            ? 'name'
+                            ? ['nombre', 'apellido']
                             : step === 2
-                              ? 'email'
+                              ? ['email', 'dni', 'celular']
                               : step === 3
-                                ? 'password'
-                                : 'confirmPassword';
+                                ? ['contraseña']
+                                : ['confirmarContraseña'];
+                        // Tocar todos los campos del paso actual
+                        await Promise.all(currentFields.map((field) => setFieldTouched(field, true)));
 
-                        await setFieldTouched(currentField, true);
-                        const errors = await validateForm();
+                        // Validar todo el formulario
+                        const allErrors = await validateForm();
 
-                        if (!errors[currentField]) {
+                        // Verificar si los campos actuales tienen errores
+                        const hasErrors = currentFields.some((field) => {
+                          return allErrors[field as keyof typeof allErrors]
+                        });
+
+                        if (!hasErrors) {
                           if (step === 3) handleSubmit();
                           else setStep((prev) => prev + 1);
                         }
+
                       }}
                       className="mt-6 bg-orange-600 py-3 rounded-xl"
                     >
