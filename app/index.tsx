@@ -29,7 +29,6 @@ export default function LandingScreen() {
                     <Text className="text-white font-bold text-center"> Registrarme </Text>
                 </Pressable>
                 
-                
         {/* boton para dirigirme a tabs */}
             <Pressable className="bg-white px-6 py-4 rounded-md mb-4" onPress={() => {router.push('/(tabs)')}}>
                 <Text className='font-bold'>tabs</Text> 

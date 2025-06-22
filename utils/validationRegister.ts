@@ -14,7 +14,7 @@ import * as Yup from 'yup';
     .email('Email inválido')
     .required('El email es obligatorio'),
   dni: Yup.string()
-    .matches(/^\d{7}$/, 'El DNI debe tener exactamente 7 números')
+    .matches(/^\d{7}$/, 'El DNI debe tener exactamente 7 dígitos numéricos')
     .required('El DNI es obligatorio'),
   celular: Yup.string()
     .matches(/^549\d{10}$/, 'Número inválido. Debe comenzar con 549 seguido de 10 dígitos')

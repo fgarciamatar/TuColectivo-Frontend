@@ -64,7 +64,7 @@ const RegisterScreen = () => {
                           </View>
                           {touched.nombre && errors.nombre && (
                             <Text className="text-red-500 text-sm mt-1">{errors.nombre}</Text>
-                          )},
+                          )}
                           <Text className="text-white mb-1">¿Cuál es tu apellido?</Text>
                           <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
                             <Ionicons name="person-outline" size={20} color="#FFA500" />

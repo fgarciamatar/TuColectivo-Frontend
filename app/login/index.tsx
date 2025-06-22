@@ -24,12 +24,9 @@ const LoginForm = () => {
 
   const handleLogin = async (credentials: LoginCredentials) => {
     console.log('Intentando iniciar sesión con', credentials);
-     const response = await loginUsuario(credentials.email, credentials.contraseña);
-     alert(response.message)
-
+      const response = await loginUsuario(credentials.email, credentials.contraseña);
+      alert(response.message)
     router.replace('/(tabs)');
-
-
   };
 
   return (

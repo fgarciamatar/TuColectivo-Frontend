@@ -14,7 +14,7 @@ export interface UserInput { // Usuario para registro
 }
 
 export interface User { //Usuario traido de login
-  dni: number;
+  dni: string;
   nombre: string;
   apellido: string;
   email: string;
@@ -37,7 +37,7 @@ export interface AuthResponse { //Respuesta del login
 
 
 interface AuthState { //Almacenamiento de zustand
-  userData: User | {};
+  userData: User | null;
   isAuthenticated: boolean;
   loading: boolean;
   access: boolean;
@@ -52,8 +52,8 @@ interface AuthState { //Almacenamiento de zustand
 
 export const API = Constants.expoConfig?.extra?.API;
 
-export const useAuthStore = create<AuthState>((set) => ({
-  userData: {},
+export const UseAuthStore = create<AuthState>((set) => ({
+  userData: null,
   isAuthenticated: false,
   loading: false,
   access: false,

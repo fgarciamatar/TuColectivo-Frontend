@@ -33,8 +33,6 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-      
-      
       <Tabs.Screen
         name="more"
         options={{
@@ -43,7 +41,13 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-
+      <Tabs.Screen
+        name="/moreScreens"
+        options={{
+          title: 'Screens',
+          headerShown: false,
+        }}
+      />
     </Tabs>
   );
 }
