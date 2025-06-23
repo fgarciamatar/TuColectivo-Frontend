@@ -1,237 +1,319 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Formik } from 'formik';
-import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
-import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
-import { validationSchema } from '../../utils/validationRegister';
+import React, { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { ModalFeedback } from "../../components/Modals/ModalFeedback ";
+import { useAuthStore } from "../../stores/useAuthStore";
 
-// Store
-import { useAuthStore } from '@/stores/authStore';
+interface FormState {
+  nombre: string;
+  apellido: string;
+  email: string;
+  dni: string;
+  celular: string;
+  contraseña: string;
+  confirmContraseña: string;
+}
 
-// Iconos
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-const RegisterScreen = () => {
-  const [step, setStep] = useState(1);
-  const router = useRouter();
-  const { registroUsuario } = useAuthStore();
-
-  return (
-    <SafeAreaView className="flex-1 bg-[#121212]">
-      <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView className="px-6 py-8" contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-          <View className="flex-1 justify-center items-center">
-            <View className="flex-row space-x-2 mb-6">
-              <View className="w-3 h-3 rounded-full bg-orange-500" />
-              <View className="w-3 h-3 rounded-full bg-gray-500" />
-              <View className="w-3 h-3 rounded-full bg-gray-500" />
-            </View>
-
-            {/* Formulario */}
-            <View className="bg-[#1e1e1e] rounded-2xl p-6 w-full max-w-md border border-orange-900">
-              <Formik
-                initialValues={{ nombre: '', apellido: '', email: '', dni: '', celular:'', contraseña: '', confirmarContraseña: '', rol:"pasajero" }}
-                validationSchema={validationSchema}
-                onSubmit={async (values, { resetForm }) => {
-                  await registroUsuario(values);
-                  resetForm();
-                  router.replace('/login');
-                }}
-              >
-                {({ handleChange, handleSubmit, setFieldTouched, validateForm, values, errors, touched }) => (
-                  <View className="space-y-5">
-                    <Animated.View
-                      entering={FadeInRight}
-                      exiting={FadeOutLeft}
-                      key={step}
-                      className="space-y-5"
-                    >
-                      {/* Nombre */}
-                      {step === 1 && (
-                        <View>
-                          <Text className="text-white mb-1">¿Cuál es tu nombre?</Text>
-                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                            <Ionicons name="person-outline" size={20} color="#FFA500" />
-                            <TextInput
-                              className="flex-1 text-white py-3 ml-2"
-                              placeholder="Nombre completo"
-                              placeholderTextColor="#999"
-                              onChangeText={handleChange('nombre')}
-                              value={values.nombre}
-                            />
-                          </View>
-                          {touched.nombre && errors.nombre && (
-                            <Text className="text-red-500 text-sm mt-1">{errors.nombre}</Text>
-                          )}
-                          <Text className="text-white mb-1">¿Cuál es tu apellido?</Text>
-                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                            <Ionicons name="person-outline" size={20} color="#FFA500" />
-                            <TextInput
-                              className="flex-1 text-white py-3 ml-2"
-                              placeholder="Apellido"
-                              placeholderTextColor="#999"
-                              onChangeText={handleChange('apellido')}
-                              value={values.apellido}
-                            />
-                          </View>
-                          {touched.apellido && errors.apellido && (
-                            <Text className="text-red-500 text-sm mt-1">{errors.apellido}</Text>
-                          )}
-                        
-
-                        </View>
-                        
-                      )}
-
-                      {/* Email */}
-                      {step === 2 && (
-                        <View>
-                          <Text className="text-white mb-1">¿Cuál es tu email?</Text>
-                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                            <MaterialCommunityIcons name="email-outline" size={20} color="#FFA500" />
-                            <TextInput
-                              className="flex-1 text-white py-3 ml-2"
-                              placeholder="tu@email.com"
-                              placeholderTextColor="#999"
-                              keyboardType="email-address"
-                              autoCapitalize="none"
-                              onChangeText={handleChange('email')}
-                              value={values.email}
-                            />
-                          </View>
-                          {touched.email && errors.email && (
-                            <Text className="text-red-500 text-sm mt-1">{errors.email}</Text>
-                          )}
-                          <Text className="text-white mb-1">¿Cuál es tu dni?</Text>
-                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                            <MaterialCommunityIcons name="email-outline" size={20} color="#FFA500" />
-                            <TextInput
-                              className="flex-1 text-white py-3 ml-2"
-                              placeholder="DNI"
-                              placeholderTextColor="#999"
-                              keyboardType="number-pad"
-                              onChangeText={handleChange('dni')}
-                              value={values.dni}
-                            />
-                          </View>
-                          {touched.dni && errors.dni && (
-                            <Text className="text-red-500 text-sm mt-1">{errors.dni}</Text>
-                          )}
-                          <Text className="text-white mb-1">¿Cuál es tu número telefónico?</Text>
-                          <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                            <MaterialCommunityIcons name="email-outline" size={20} color="#FFA500" />
-                            <TextInput
-                              className="flex-1 text-white py-3 ml-2"
-                              placeholder="Número de Celular"
-                              placeholderTextColor="#999"
-                              keyboardType="number-pad"
-                              onChangeText={handleChange('celular')}
-                              value={values.celular}
-                            />
-                          </View>
-                          {touched.celular && errors.celular && (
-                            <Text className="text-red-500 text-sm mt-1">{errors.celular}</Text>
-                          )}
-                        </View>
-                      )}
-
-                      {/* Contraseña */}
-                      {step === 3 && (
-                        <>
-                          <View>
-                            <Text className="text-white mb-1">Elige una contraseña</Text>
-                            <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                              <AntDesign name="lock1" size={20} color="#FFA500" />
-                              <TextInput
-                                className="flex-1 text-white py-3 ml-2"
-                                placeholder="Contraseña"
-                                placeholderTextColor="#999"
-                                secureTextEntry
-                                onChangeText={handleChange('contraseña')}
-                                value={values.contraseña}
-                              />
-                            </View>
-                            {touched.contraseña && errors.contraseña && (
-                              <Text className="text-red-500 text-sm mt-1">{errors.contraseña}</Text>
-                            )}
-                          </View>
-
-                          <View>
-                            <Text className="text-white mb-1">Confirma tu contraseña</Text>
-                            <View className="flex-row items-center bg-[#2a2a2a] rounded-lg px-3">
-                              <AntDesign name="lock1" size={20} color="#FFA500" />
-                              <TextInput
-                                className="flex-1 text-white py-3 ml-2"
-                                placeholder="Confirmar contraseña"
-                                placeholderTextColor="#999"
-                                secureTextEntry
-                                onChangeText={handleChange('confirmarContraseña')}
-                                value={values.confirmarContraseña}
-                              />
-                            </View>
-                            {touched.confirmarContraseña && errors.confirmarContraseña && (
-                              <Text className="text-red-500 text-sm mt-1">{errors.confirmarContraseña}</Text>
-                            )}
-                          </View>
-                        </>
-                      )}
-                    </Animated.View>
-
-                    {/* Botón */}
-                    <Pressable
-                      onPress={async () => {
-                        const currentFields =
-                          step === 1
-                            ? ['nombre', 'apellido']
-                            : step === 2
-                              ? ['email', 'dni', 'celular']
-                              : step === 3
-                                ? ['contraseña']
-                                : ['confirmarContraseña'];
-                        // Tocar todos los campos del paso actual
-                        await Promise.all(currentFields.map((field) => setFieldTouched(field, true)));
-
-                        // Validar todo el formulario
-                        const allErrors = await validateForm();
-
-                        // Verificar si los campos actuales tienen errores
-                        const hasErrors = currentFields.some((field) => {
-                          return allErrors[field as keyof typeof allErrors]
-                        });
-
-                        if (!hasErrors) {
-                          if (step === 3) handleSubmit();
-                          else setStep((prev) => prev + 1);
-                        }
-
-                      }}
-                      className="mt-6 bg-orange-600 py-3 rounded-xl"
-                    >
-                      <Text className="text-white text-center font-semibold text-lg">
-                        {step === 3 ? 'Registrarse' : 'Continuar'}
-                      </Text>
-                    </Pressable>
-
-                    {/* Comentario final */}
-                    <View className="flex-row items-center justify-center">
-                      <Text className="text-center justify-center items-center text-sm text-gray-400">
-                        ¿Ya tienes una cuenta?
-                      </Text>
-                      <Pressable className="font-bold" onPress={() => { router.push('/login') }}>
-                        <Text className="text-orange-500"> Inicia sesión</Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                )}
-              </Formik>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+const initialForm: FormState = {
+  nombre: "",
+  apellido: "",
+  email: "",
+  dni: "",
+  celular: "",
+  contraseña: "",
+  confirmContraseña: "",
 };
 
-export default RegisterScreen;
+export default function Register() {
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState<FormState>(initialForm);
+  const [errors, setErrors] = useState<{ [K in keyof FormState]?: string }>({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "error">("success");
+  const router = useRouter();
+
+  const registroUsuario = useAuthStore((state) => state.registroUsuario);
+
+  const handleChange = (field: keyof FormState, value: string) => {
+    setForm({ ...form, [field]: value });
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
+  const validateStep = (): boolean => {
+    let newErrors: { [K in keyof FormState]?: string } = {};
+
+    if (step === 1) {
+      if (!form.nombre.trim()) newErrors.nombre = "El nombre es obligatorio.";
+      if (!form.apellido.trim())
+        newErrors.apellido = "El apellido es obligatorio.";
+    }
+
+    if (step === 2) {
+      if (!form.email.includes("@")) newErrors.email = "Email inválido.";
+      if (form.dni.length < 7) newErrors.dni = "DNI inválido.";
+      if (form.celular.length < 6) newErrors.celular = "Número inválido.";
+    }
+
+    if (step === 3) {
+      if (form.contraseña.length < 6)
+        newErrors.contraseña = "Mínimo 6 caracteres.";
+      if (form.contraseña !== form.confirmContraseña)
+        newErrors.confirmContraseña = "Las contraseñas no coinciden.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleContinue = async () => {
+    if (!validateStep()) {
+      setModalType("error");
+      setModalMessage("Por favor, completá correctamente todos los campos.");
+      setModalVisible(true);
+      return;
+    }
+
+    if (step < 3) {
+      setStep(step + 1);
+    } else {
+      const { confirmContraseña, ...userData } = form;
+
+      try {
+        await registroUsuario(userData);
+        setModalType("success");
+        setModalMessage("Usuario registrado correctamente.");
+        setModalVisible(true);
+      } catch (error: any) {
+        setModalType("error");
+        setModalMessage(error.message || "No se pudo registrar.");
+        setModalVisible(true);
+      }
+    }
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <>
+            <LabelledInput
+              icon="person"
+              label="¿Cuál es tu nombre?"
+              placeholder="Nombre completo"
+              value={form.nombre}
+              onChangeText={(v) => handleChange("nombre", v)}
+              error={errors.nombre}
+            />
+            <LabelledInput
+              icon="person-outline"
+              label="¿Cuál es tu apellido?"
+              placeholder="Apellido"
+              value={form.apellido}
+              onChangeText={(v) => handleChange("apellido", v)}
+              error={errors.apellido}
+            />
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <LabelledInput
+              icon="mail"
+              label="¿Cuál es tu email?"
+              placeholder="ejemplo@email.com"
+              value={form.email}
+              onChangeText={(v) => handleChange("email", v)}
+              keyboardType="email-address"
+              error={errors.email}
+            />
+            <LabelledInput
+              icon="card"
+              label="¿Cuál es tu DNI?"
+              placeholder="DNI"
+              value={form.dni}
+              onChangeText={(v) => handleChange("dni", v)}
+              keyboardType="numeric"
+              error={errors.dni}
+            />
+            <LabelledInput
+              icon="call"
+              label="¿Cuál es tu celular?"
+              placeholder="Celular"
+              value={form.celular}
+              onChangeText={(v) => handleChange("celular", v)}
+              keyboardType="phone-pad"
+              error={errors.celular}
+            />
+          </>
+        );
+      case 3:
+        return (
+          <>
+            <LabelledInput
+              icon="lock-closed"
+              label="Crea una contraseña"
+              placeholder="Contraseña"
+              value={form.contraseña}
+              onChangeText={(v) => handleChange("contraseña", v)}
+              secureTextEntry
+              error={errors.contraseña}
+            />
+            <LabelledInput
+              icon="lock-open"
+              label="Confirma tu contraseña"
+              placeholder="Confirmar"
+              value={form.confirmContraseña}
+              onChangeText={(v) => handleChange("confirmContraseña", v)}
+              secureTextEntry
+              error={errors.confirmContraseña}
+            />
+          </>
+        );
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#121212" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+          {/* Indicador de pasos */}
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginBottom: 20,
+            }}
+          >
+            {[1, 2, 3].map((s) => (
+              <View
+                key={s}
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  marginHorizontal: 5,
+                  backgroundColor: step === s ? "#ea580c" : "#888",
+                }}
+              />
+            ))}
+          </View>
+
+          <View
+            style={{
+              backgroundColor: "#1e1e1e",
+              padding: 20,
+              borderRadius: 10,
+              borderColor: "#ea580c",
+              borderWidth: 1,
+            }}
+          >
+            {renderStep()}
+
+            <TouchableOpacity
+              onPress={handleContinue}
+              style={{
+                marginTop: 20,
+                backgroundColor: "#ea580c",
+                padding: 15,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                {step < 3 ? "Continuar" : "Registrarse"}
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={{ marginTop: 15, textAlign: "center", color: "#aaa" }}>
+              ¿Ya tienes una cuenta?{" "}
+              <Text style={{ color: "#ea580c" }}>Inicia sesión</Text>
+            </Text>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+      <ModalFeedback
+        visible={modalVisible}
+        message={modalMessage}
+        type={modalType}
+        onClose={() => {
+          setModalVisible(false);
+          if (modalType === "success") {
+            router.replace("/login");
+          }
+        }}
+      />
+    </SafeAreaView>
+  );
+}
+
+interface LabelledInputProps {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  icon: keyof typeof Ionicons.glyphMap;
+  error?: string;
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+  secureTextEntry?: boolean;
+}
+
+const LabelledInput: React.FC<LabelledInputProps> = ({
+  label,
+  icon,
+  error,
+  ...props
+}) => (
+  <View style={{ marginBottom: 15 }}>
+    <Text style={{ color: "white", marginBottom: 5 }}>{label}</Text>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#2a2a2a",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: error ? "red" : "#2a2a2a",
+      }}
+    >
+      <Ionicons name={icon} size={20} color="#aaa" style={{ marginRight: 8 }} />
+      <TextInput
+        {...props}
+        style={{
+          flex: 1,
+          color: "white",
+          paddingVertical: 10,
+        }}
+        placeholderTextColor="#888"
+      />
+    </View>
+    {error && (
+      <Animated.Text
+        entering={FadeIn}
+        style={{ color: "red", marginTop: 4, fontSize: 12 }}
+      >
+        {error}
+      </Animated.Text>
+    )}
+  </View>
+);
