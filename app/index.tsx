@@ -2,13 +2,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import {
-    Animated,
-    Easing,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
+  Animated,
+  Easing,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 
 export default function LandingScreen() {
@@ -89,11 +89,23 @@ export default function LandingScreen() {
             Iniciar sesión
           </Text>
         </Pressable>
+
+
+        
       </View>
 
       <Text className="text-orange-500 text-sm mt-12 text-center">
         Encuentra tu colectivo de forma fácil, rápida  y segura.
       </Text>
+
+       <Pressable
+          className="border border-orange-600 rounded-xl py-3 bg-[#121212]"
+          onPress={() => router.push('/chofer')}
+        >
+          <Text className="text-orange-500 font-bold text-center ">
+            CHOFER
+          </Text>
+        </Pressable>
     </SafeAreaView>
   );
 }
